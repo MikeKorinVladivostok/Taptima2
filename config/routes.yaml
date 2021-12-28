@@ -1,0 +1,41 @@
+IndexAuthorController:
+    path: /author/read
+    controller: App\Controller\AuthorController::read
+CreateAuthorController:
+    path: /author/create
+    controller: App\Controller\AuthorController::create
+UpdateAuthorController:
+    path: /author/update
+    controller: App\Controller\AuthorController::update
+DeleteAuthorController:
+    path: /author/delete
+    controller: App\Controller\AuthorController::delete
+FormAuthorController:
+    path: /author/form
+    controller: App\Controller\AuthorController::form
+
+IndexBookController:
+    path: /book/read
+    controller: App\Controller\BookController::read
+CreateBookController:
+    path: /book/create
+    controller: App\Controller\BookController::create
+UpdateBookController:
+    path: /book/update
+    controller: App\Controller\BookController::update
+DeleteBookController:
+    path: /book/delete
+    controller: App\Controller\BookController::delete
+FormBookController:
+    path: /book/form
+    controller: App\Controller\BookController::form
+
+IndexCoauthorController:
+    path: /coauthor/read
+    controller: App\Controller\CoauthorController::read
+CreateCoauthorController:
+    path: /coauthor/create
+    controller: App\Controller\CoauthorController::create
+FormCoauthorController:
+    path: /coauthor/form
+    controller: App\Controller\CoauthorController::form

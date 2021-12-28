@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+    {% for post in books %}
+        <p>{{ post.id }}</p>
+        <p>{{ post.book_name }}</p>
+        <p>{{ post.author }}</p>
+        <p>{{ post.title }}</p>
+        <p>{{ post.images }}</p>
+        <p>{{ post.year }}</p>
+    {% endfor %}
+{% endblock %}
