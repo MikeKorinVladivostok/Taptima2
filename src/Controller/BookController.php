@@ -14,9 +14,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class BookController extends AbstractController
 {
-    /**
-     * @Route("/book", name="book")
-     */
     public function index(): Response
     {
         return $this->render('book/form.html.twig', [
@@ -53,7 +50,7 @@ class BookController extends AbstractController
         $entityManager->persist($coauthor_to_book);
         $entityManager->flush();
 
-        return $this->read();
+        return $this->redirect('http://taptima2/book/read');
 
     }
     public function read()
@@ -74,7 +71,7 @@ class BookController extends AbstractController
                 'year'        => $value -> getYear()
             );
         }
-        return $this->render('book/form.html.twig', array(
+        return $this->render('book/index.html.twig', array(
             'books' => $book_array,
         ));
     }

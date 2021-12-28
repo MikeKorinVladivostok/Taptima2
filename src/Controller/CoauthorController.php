@@ -11,9 +11,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CoauthorController extends AbstractController
 {
-    /**
-     * @Route("/coauthor", name="coauthor")
-     */
     public function index(): Response
     {
         return $this->render('coauthor/form.html.twig', [
@@ -63,7 +60,6 @@ class CoauthorController extends AbstractController
         $entityManager->persist($coAuthor);
         $entityManager->flush();
 
-//        return $this ->read();
         return $this->redirect('http://taptima2/coauthor/read');
 
     }

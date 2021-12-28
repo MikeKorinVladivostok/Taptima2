@@ -15,9 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthorController extends AbstractController
 {
-    /**
-     * @Route("/author", name="author")
-     */
+
     public function index(): Response
     {
         return $this->render('author/form.html.twig', [
@@ -36,7 +34,7 @@ class AuthorController extends AbstractController
         $entityManager->persist($author);
         $entityManager->flush();
 
-        return $this->read();
+        return $this->redirect('http://taptima2/author/read');
 
     }
 
