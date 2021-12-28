@@ -4,8 +4,23 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-
+    locale: 'en'
 services:
+    admin.category:
+        class: App\Admin\CategoryAdmin
+        arguments: [~, App\Entity\Book, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Book }
+    admin.author:
+        class: App\Admin\AuthorAdmin
+        arguments: [~, App\Entity\Author, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Author }
+    admin.coauthor:
+        class: App\Admin\CoauthorAdmin
+        arguments: [~, App\Entity\Coauthors, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Coauthors }
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
