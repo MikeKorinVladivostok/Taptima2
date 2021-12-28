@@ -55,7 +55,7 @@ class AuthorController extends AbstractController
                 'count_book'  => $value -> getCountBook(),
             );
         }
-        return $this->render('author/form.html.twig', array(
+        return $this->render('author/index.html.twig', array(
             'authors' => $author_array,
         ));
     }

@@ -24,7 +24,7 @@ class CoauthorController extends AbstractController
     public function form()
     {
         $form = $this -> createForm(CoauthorForm::class);
-        return $this->render('coauthor/form.html.twig', ['form' => $form -> createView()]);
+        return $this  -> render('coauthor/form.html.twig', ['form' => $form -> createView()]);
     }
 
     public function read()
@@ -44,7 +44,7 @@ class CoauthorController extends AbstractController
             );
         }
 
-        return $this->render('coauthor/form.html.twig', array(
+        return $this->render('coauthor/index.html.twig', array(
             'authors' => $coAuthor,
         ));
 
@@ -63,7 +63,8 @@ class CoauthorController extends AbstractController
         $entityManager->persist($coAuthor);
         $entityManager->flush();
 
-        return $this ->read();
+//        return $this ->read();
+        return $this->redirect('http://taptima2/coauthor/read');
 
     }
 
