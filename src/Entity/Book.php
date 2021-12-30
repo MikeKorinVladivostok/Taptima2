@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
+use App\Controller\BookController;
 use App\Repository\BookRepository;
 use Doctrine\ORM\Mapping as ORM;
+use phpDocumentor\Reflection\Types\Object_;
 
 /**
  * @ORM\Entity(repositoryClass=BookRepository::class)
@@ -18,7 +20,7 @@ class Book
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $book_name;
 
@@ -42,6 +44,10 @@ class Book
      */
     private $year;
 
+    public function __toString(){
+        return $this->author;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,12 +65,12 @@ class Book
         return $this;
     }
 
-    public function getAuthor(): ?string
+    public function getAuthor()
     {
         return $this->author;
     }
 
-    public function setAuthor(?string $author): self
+    public function setAuthor($author): self
     {
         $this->author = $author;
 

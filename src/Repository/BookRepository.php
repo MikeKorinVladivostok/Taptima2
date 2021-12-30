@@ -22,19 +22,42 @@ class BookRepository extends ServiceEntityRepository
     // /**
     //  * @return Book[] Returns an array of Book objects
     //  */
-    /*
-    public function findByExampleField($value)
+
+//    public function findByExampleField()
+//    {
+//        return $this->createQueryBuilder('b')
+//            ->andWhere('b.exampleField = :val')
+//            ->orderBy('b.id', 'ASC')
+//            ->setMaxResults(10)
+//            ->getQuery()
+//            ->getResult()
+//        ;
+//    }
+    public function sqlQueryDoctrine() : array
     {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('b.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT b.book_name,count(c.author_id) as cnt
+            FROM App\Entity\Book b JOIN App\Entity\Coauthors c
+            WHERE (b.id = c.book_id ) having cnt > 1'
+        );
+
+        return $query->getResult();
     }
-    */
+
+//    public function realAuthorName() : array
+//    {
+//        $entityManager = $this->getEntityManager();
+//
+//        $query = $entityManager->createQuery(
+//            'SELECT a.author_name
+//            FROM App\Entity\Author a JOIN App\Entity\Book b
+//            WHERE b.author = a.id'
+//        );
+//
+//        return $query->getResult();
+//    }
 
     /*
     public function findOneBySomeField($value): ?Book

@@ -17,6 +17,9 @@ FormAuthorController:
 IndexBookController:
     path: /book/read
     controller: App\Controller\BookController::read
+SqlDoctrine:
+    path: /book/doctrine
+    controller: App\Controller\BookController::SQLDoctrine
 CreateBookController:
     path: /book/create
     controller: App\Controller\BookController::create

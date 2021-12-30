@@ -10,20 +10,18 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 final class CategoryAdmin extends AbstractAdmin
 {
     protected function configureFormFields(FormMapper $form): void
     {
         $form->add('book_name', TextType::class);
-        $form->add('author', \Symfony\Bridge\Doctrine\Form\Type\EntityType::class, array(
-        'class' => Author::class,
-        'choice_label' => function(?Author $authors) {
-            return $authors ? $authors->getAuthorName() : '';
-        },));
+        $form->add('author',EntityType::class , ['class' => Author::class, 'choice_label' => 'getAuthorName']);
         $form->add('title', TextType::class);
-        $form->add('images', \Symfony\Component\Form\Extension\Core\Type\FileType::class);
+        $form->add('images', FileType::class, array('data_class' => null));
         $form->add('year', TextType::class);
 
     }
