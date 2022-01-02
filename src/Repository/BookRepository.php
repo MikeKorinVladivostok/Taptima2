@@ -38,26 +38,16 @@ class BookRepository extends ServiceEntityRepository
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
-            'SELECT b.book_name,count(c.author_id) as cnt
-            FROM App\Entity\Book b JOIN App\Entity\Coauthors c
-            WHERE (b.id = c.book_id ) having cnt > 1'
+            'SELECT b.book_name, COUNT(c.book_id)
+            FROM App\Entity\Coauthors c JOIN App\Entity\Book b
+            WHERE b.id = c.book_id AND c.main_author IS NULL
+            GROUP BY c.book_id
+            HAVING COUNT(c.book_id) > 2'
         );
 
         return $query->getResult();
     }
 
-//    public function realAuthorName() : array
-//    {
-//        $entityManager = $this->getEntityManager();
-//
-//        $query = $entityManager->createQuery(
-//            'SELECT a.author_name
-//            FROM App\Entity\Author a JOIN App\Entity\Book b
-//            WHERE b.author = a.id'
-//        );
-//
-//        return $query->getResult();
-//    }
 
     /*
     public function findOneBySomeField($value): ?Book

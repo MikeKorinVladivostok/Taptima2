@@ -112,7 +112,6 @@ class BookController extends AbstractController
         $book = $entityManager->getRepository(Book::class)->sqlQueryDoctrine();
 
         echo '<pre>'.print_r($book,true).'</pre>';
-        echo '<pre>'.print_r("done",true).'</pre>';
     }
 
     public function form()
