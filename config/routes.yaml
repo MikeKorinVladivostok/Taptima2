@@ -17,9 +17,6 @@ FormAuthorController:
 IndexBookController:
     path: /book/read
     controller: App\Controller\BookController::read
-SqlDoctrine:
-    path: /book/doctrine
-    controller: App\Controller\BookController::SQLDoctrine
 CreateBookController:
     path: /book/create
     controller: App\Controller\BookController::create
@@ -29,6 +26,12 @@ UpdateBookController:
 DeleteBookController:
     path: /book/delete
     controller: App\Controller\BookController::delete
+SqlDoctrine:
+    path: /book/doctrine
+    controller: App\Controller\BookController::SQLDoctrine
+NativeSql:
+    path: /book/native
+    controller: App\Controller\BookController::NativeSQl
 FormBookController:
     path: /book/form
     controller: App\Controller\BookController::form

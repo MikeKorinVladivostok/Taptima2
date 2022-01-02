@@ -6,6 +6,7 @@ use App\Entity\Book;
 use App\Entity\Coauthors;
 use App\Form\BookForm;
 use Doctrine\Persistence\ManagerRegistry;
+use mysqli;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -112,6 +113,16 @@ class BookController extends AbstractController
         $book = $entityManager->getRepository(Book::class)->sqlQueryDoctrine();
 
         echo '<pre>'.print_r($book,true).'</pre>';
+    }
+
+    public function NativeSQl()
+    {
+        $mysqli = new mysqli("localhost", "root", "", "taptima2");
+        $result = $mysqli->query("SELECT b.book_name,COUNT(c.book_id) AS count FROM Coauthors c JOIN Book b WHERE b.id = c.book_id AND c.main_author IS NULL HAVING COUNT(c.book_id) > 2");
+
+        foreach ($result as $value){
+            echo '<pre>'.print_r($value,true).'</pre>';
+        }
     }
 
     public function form()
