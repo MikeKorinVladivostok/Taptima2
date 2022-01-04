@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\Author;
 use App\Entity\Book;
+use App\Entity\CoauthorNew;
 use App\Entity\Coauthors;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -37,7 +38,7 @@ class CoauthorForm extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Coauthors::class,
+            'data_class' => CoauthorNew::class,
         ]);
     }
 }

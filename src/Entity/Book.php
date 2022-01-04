@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Controller\BookController;
 use App\Repository\BookRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use phpDocumentor\Reflection\Types\Object_;
 
@@ -24,10 +26,6 @@ class Book
      */
     private $book_name;
 
-    /**
-     * @ORM\Column(type="string", length=50, nullable=true)
-     */
-    private $author;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -44,8 +42,14 @@ class Book
      */
     private $year;
 
-    public function __toString(){
-        return $this->author;
+    /**
+     * @ORM\OneToMany(targetEntity=CoauthorNew::class, mappedBy="book")
+     */
+    private $coauthorNews;
+
+    public function __construct()
+    {
+        $this->coauthorNews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -65,17 +69,6 @@ class Book
         return $this;
     }
 
-    public function getAuthor()
-    {
-        return $this->author;
-    }
-
-    public function setAuthor($author): self
-    {
-        $this->author = $author;
-
-        return $this;
-    }
 
     public function getTitle(): ?string
     {
@@ -109,6 +102,36 @@ class Book
     public function setYear(?string $year): self
     {
         $this->year = $year;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CoauthorNew[]
+     */
+    public function getCoauthorNews(): Collection
+    {
+        return $this->coauthorNews;
+    }
+
+    public function addCoauthorNews(CoauthorNew $coauthorNews): self
+    {
+        if (!$this->coauthorNews->contains($coauthorNews)) {
+            $this->coauthorNews[] = $coauthorNews;
+            $coauthorNews->setBook($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCoauthorNews(CoauthorNew $coauthorNews): self
+    {
+        if ($this->coauthorNews->removeElement($coauthorNews)) {
+            // set the owning side to null (unless already changed)
+            if ($coauthorNews->getBook() === $this) {
+                $coauthorNews->setBook(null);
+            }
+        }
 
         return $this;
     }

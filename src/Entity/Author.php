@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AuthorRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,6 +28,11 @@ class Author
      * @ORM\Column(type="integer", nullable=true)
      */
     private $count_book;
+
+    public function __construct()
+    {
+        $this->coauthorNews = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {

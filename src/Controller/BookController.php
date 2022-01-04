@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Book;
+use App\Entity\CoauthorNew;
 use App\Entity\Coauthors;
 use App\Form\BookForm;
 use Doctrine\Persistence\ManagerRegistry;
@@ -34,7 +35,6 @@ class BookController extends AbstractController
         $book  = new Book();
 
         $book-> setBookName($data['book_form']['book_name']);
-        $book-> setAuthor($data['book_form']['author']);
         $book-> setTitle($data['book_form']['title']);
         $book-> setImages($destiation_dir);
         $book-> setYear($data['book_form']['year']);
@@ -42,7 +42,7 @@ class BookController extends AbstractController
         $entityManager->persist($book);
         $entityManager->flush();
 
-        $coauthor_to_book = new Coauthors();
+        $coauthor_to_book = new CoauthorNew();
 
         $coauthor_to_book -> setBookId($book->getId());
         $coauthor_to_book -> setAuthorId($data['book_form']['author']);
@@ -56,20 +56,19 @@ class BookController extends AbstractController
     }
     public function read()
     {
-        $book = $this->getDoctrine()
-            ->getRepository(Book::class)
-            ->findAll();
+        $entityManager = $this->getDoctrine()->getManager();
+        $book = $entityManager->getRepository(Book::class)->get_books();
 
         $book_array = array();
 
         foreach ($book as $value) {
             $book_array[] = array(
-                'id'          => $value -> getId(),
-                'book_name'   => $value -> getBookName(),
-                'author'      => $value -> getAuthor(),
-                'title'       => $value -> getTitle(),
-                'images'      => $value -> getImages(),
-                'year'        => $value -> getYear()
+                'id'          => $value['id'],
+                'book_name'   => $value['book_name'],
+                'author'      => $value['author'],
+                'title'       => $value['title'],
+                'images'      => $value['images'],
+                'year'        => $value['year'],
             );
         }
         return $this->render('book/index.html.twig', array(
@@ -118,7 +117,7 @@ class BookController extends AbstractController
     public function NativeSQl()
     {
         $mysqli = new mysqli("localhost", "root", "", "taptima2");
-        $result = $mysqli->query("SELECT b.book_name,COUNT(c.book_id) AS count FROM Coauthors c JOIN Book b WHERE b.id = c.book_id AND c.main_author IS NULL HAVING COUNT(c.book_id) > 2");
+        $result = $mysqli->query("SELECT b.book_name,COUNT(c.book_id) AS count FROM CoauthorNew c JOIN Book b WHERE b.id = c.book_id AND c.main_author IS NULL GROUP BY c.book_id HAVING COUNT(c.book_id) > 2");
 
         foreach ($result as $value){
             echo '<pre>'.print_r($value,true).'</pre>';

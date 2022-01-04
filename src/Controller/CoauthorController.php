@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\CoauthorNew;
 use App\Entity\Coauthors;
 use App\Form\CoauthorForm;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,7 +30,7 @@ class CoauthorController extends AbstractController
         $coAuthor = array();
 
         $product = $this->getDoctrine()
-            ->getRepository(Coauthors::class)
+            ->getRepository(CoauthorNew::class)
             ->findAll();
 
         foreach ($product as $value)
@@ -52,10 +53,11 @@ class CoauthorController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $data = $request->request->all();
 
-        $coAuthor = new Coauthors();
+        $coAuthor = new CoauthorNew();
 
         $coAuthor -> setAuthorId($data['coauthor_form']['author_id']);
         $coAuthor -> setBookId($data['coauthor_form']['book_id']);
+
 
         $entityManager->persist($coAuthor);
         $entityManager->flush();
