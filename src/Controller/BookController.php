@@ -48,6 +48,8 @@ class BookController extends AbstractController
         $coauthor_to_book -> setAuthorId($data['book_form']['author']);
         $coauthor_to_book -> setMainAuthor(true);
 
+        $coauthor_to_book -> setBook($book);
+
         $entityManager->persist($coauthor_to_book);
         $entityManager->flush();
 

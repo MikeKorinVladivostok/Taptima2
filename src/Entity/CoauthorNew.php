@@ -22,9 +22,9 @@ class CoauthorNew
      */
     private $book;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Author::class, inversedBy="coauthorNews")
-     */
+//    /**
+//     * @ORM\ManyToOne(targetEntity=Author::class, inversedBy="coauthorNews")
+//     */
     private $author;
 
     /**
