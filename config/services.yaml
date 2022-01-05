@@ -16,7 +16,7 @@ services:
         arguments: [~, App\Entity\Author, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: Author }
-    admin.coauthor:
+    admin.coauthorNew:
         class: App\Admin\CoauthorAdmin
         arguments: [~, App\Entity\CoauthorNew, ~]
         tags:

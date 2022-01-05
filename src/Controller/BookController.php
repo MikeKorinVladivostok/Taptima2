@@ -51,6 +51,8 @@ class BookController extends AbstractController
         $coauthor_to_book -> setBook($book);
 
         $entityManager->persist($coauthor_to_book);
+        $entityManager->persist($book);
+
         $entityManager->flush();
 
         return $this->redirect('http://taptima2/book/read');
@@ -64,6 +66,9 @@ class BookController extends AbstractController
         $book_array = array();
 
         foreach ($book as $value) {
+            if($value['book_name'] == null){
+                continue;
+            }
             $book_array[] = array(
                 'id'          => $value['id'],
                 'book_name'   => $value['book_name'],

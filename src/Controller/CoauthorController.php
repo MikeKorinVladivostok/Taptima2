@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Book;
 use App\Entity\CoauthorNew;
 use App\Entity\Coauthors;
 use App\Form\CoauthorForm;
@@ -54,12 +55,15 @@ class CoauthorController extends AbstractController
         $data = $request->request->all();
 
         $coAuthor = new CoauthorNew();
+        $book = new Book();
 
         $coAuthor -> setAuthorId($data['coauthor_form']['author_id']);
         $coAuthor -> setBookId($data['coauthor_form']['book_id']);
 
+        $book-> addCoauthorNews($coAuthor);
 
         $entityManager->persist($coAuthor);
+        $entityManager->persist($book);
         $entityManager->flush();
 
         return $this->redirect('http://taptima2/coauthor/read');
