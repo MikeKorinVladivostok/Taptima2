@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Author;
 use App\Entity\Book;
 use App\Entity\CoauthorNew;
 use App\Entity\Coauthors;
@@ -129,6 +130,55 @@ class BookController extends AbstractController
         foreach ($result as $value){
             echo '<pre>'.print_r($value,true).'</pre>';
         }
+    }
+
+    public function bookGenerator()
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $destiation_dir = basename('/public/image/default.jpg');
+
+        $author = $this->getDoctrine()
+            ->getRepository(Author::class)
+            ->findAll();
+
+        $author_array = array();
+
+        foreach ($author as $value) {
+            $author_array[] = array(
+                'id'          => $value -> getId(),
+                'author_name' => $value -> getAuthorName(),
+                'count_book'  => $value -> getCountBook(),
+            );
+        }
+
+        $book_name = array("Властелин колец","Гордость и предубеждение","Тёмные начала","1984","Ветер в ивах","Большие надежды");
+        $book_title = array("Lorem ipsum dolor sit amet, consectetur adipiscing elit ");
+        $book_year = array("1849", "1714","1999","2016","2010","2015","1998");
+
+        $book  = new Book();
+
+        $book-> setBookName($book_name[rand(0,count($book_name)-1)]);
+        $book-> setTitle($book_title[rand(0,count($book_title)-1)]);
+        $book-> setImages($destiation_dir);
+        $book-> setYear($book_year[rand(0,count($book_year)-1)]);
+
+        $entityManager->persist($book);
+        $entityManager->flush();
+
+        $coauthor_to_book = new CoauthorNew();
+
+        $coauthor_to_book -> setBookId($book->getId());
+        $coauthor_to_book -> setAuthorId($author_array[rand(0,count($author_array)-1)]['id']);
+        $coauthor_to_book -> setMainAuthor(true);
+
+        $coauthor_to_book -> setBook($book);
+
+        $entityManager->persist($coauthor_to_book);
+        $entityManager->persist($book);
+
+        $entityManager->flush();
+
+        return $this->redirect('http://taptima2/book/read');
     }
 
     public function form()

@@ -32,6 +32,9 @@ SqlDoctrine:
 NativeSql:
     path: /book/native
     controller: App\Controller\BookController::NativeSQl
+BookGenerator:
+    path: /book/generate
+    controller: App\Controller\BookController::bookGenerator
 FormBookController:
     path: /book/form
     controller: App\Controller\BookController::form

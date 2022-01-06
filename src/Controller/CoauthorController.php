@@ -66,7 +66,7 @@ class CoauthorController extends AbstractController
         $entityManager->persist($book);
         $entityManager->flush();
 
-        return $this->redirect('http://taptima2/coauthor/read');
+        return $this->redirect('http://taptima2/book/read');
 
     }
 
