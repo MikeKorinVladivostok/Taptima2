@@ -48,3 +48,4 @@ CreateCoauthorController:
 FormCoauthorController:
     path: /coauthor/form
     controller: App\Controller\CoauthorController::form
+

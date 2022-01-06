@@ -6,6 +6,8 @@ use App\Entity\Author;
 use App\Entity\Book;
 use App\Entity\CoauthorNew;
 use App\Entity\Coauthors;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use App\EventListener\EventListener;
 use App\Form\BookForm;
 use Doctrine\Persistence\ManagerRegistry;
 use mysqli;
@@ -24,7 +26,7 @@ class BookController extends AbstractController
         ]);
     }
 
-    public function create(ManagerRegistry $doctrine, Request $request)
+    public function create(ManagerRegistry $doctrine, EventDispatcherInterface $dispatcher, Request $request)
     {
         $entityManager = $doctrine->getManager();
         $data = $request->request->all();
@@ -56,11 +58,13 @@ class BookController extends AbstractController
 
         $entityManager->flush();
 
+
         return $this->redirect('http://taptima2/book/read');
 
     }
     public function read()
     {
+
         $entityManager = $this->getDoctrine()->getManager();
         $book = $entityManager->getRepository(Book::class)->get_books();
 
@@ -180,6 +184,7 @@ class BookController extends AbstractController
 
         return $this->redirect('http://taptima2/book/read');
     }
+
 
     public function form()
     {

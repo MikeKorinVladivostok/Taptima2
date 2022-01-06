@@ -126,7 +126,7 @@
                         trObj.find(".saveBtn").hide();
                         trObj.find(".editSpan").show();
                         trObj.find(".editBtn").show();
-                        // location.reload()
+                        location.reload()
 
                     }else{
                         alert(response.msg);
@@ -146,7 +146,7 @@
             let ID = $(this).closest("tr").attr('id');
             $.ajax({
                 type:'POST',
-                url:'/deleteauthor',
+                url:'/author/delete',
                 dataType: "json",
                 data:'action=delete&id='+ID,
                 success:function(response){
@@ -176,6 +176,7 @@
                             <thead>
                             <tr>
                                 <th width="5%">id</th>
+                                <th width="10%">Книги</th>
                                 <th width="10%">Автор</th>
                                 <th width="10%">Редактирование</th>
                             </tr>
@@ -184,6 +185,11 @@
                             {% for post in authors %}
                                 <tr id="{{ post.id}}">
                                     <td>{{ post.id}}</td>
+                                    <td>
+                                        <span class="books">{{ post.count_book}}</span>
+                                        <input class="book input" type="text" name="books"
+                                               value="{{ post.count_book}}" style="display: none;">
+                                    </td>
                                     <td>
                                         <span class="editSpan autors">{{ post.author_name}}</span>
                                         <input class="editInput autors form-control input-sm" type="text" name="autors"
@@ -202,10 +208,10 @@
                             </tbody>
                         </table>
                     </div>
-                    <a href="/formautors" class="mb-1 btn btn-primary" type="button">
+                    <a href="/author/form" class="mb-1 btn btn-primary" type="button">
                         Добавить автора
                     </a>
-                    <a href="/" class="mb-1 btn btn-primary" type="button">
+                    <a href="/book/read" class="mb-1 btn btn-primary" type="button">
                         К книгам
                     </a>
                 </div>

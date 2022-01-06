@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Author;
-use App\Entity\Coauthors;
+use App\Entity\CoauthorNew;
 use App\Form\AuthorForm;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,6 +40,8 @@ class AuthorController extends AbstractController
 
     public function read()
     {
+        $this->countBooks();
+
         $author = $this->getDoctrine()
             ->getRepository(Author::class)
             ->findAll();
@@ -62,12 +64,14 @@ class AuthorController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
         $data = $request->request->all();
-        $author = $entityManager->getRepository(Author::class)->find($data['author_form']['id']);
 
-        $author->setAutors($data['author_form']['author_name']);
+        $author = $entityManager->getRepository(Author::class)->find($data['id']);
+
+        $author->setAuthorName($data['autors']);
         $entityManager->flush();
+        $books = $this->countBooks();
 
-        return new JsonResponse(['status' => 'ok','authors' => $data['author_form']['author_name']]);
+        return new JsonResponse(['status' => 'ok','authors' => $data['autors'], 'books' => $books]);
     }
 
     public function delete(Request $request)
@@ -75,12 +79,40 @@ class AuthorController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $data = $request->request->all();
 
-        $author = $entityManager->getRepository(Author::class)->find($data['author_form']['id']);
+        $author = $entityManager->getRepository(Author::class)->find($data['id']);
 
         $entityManager->remove($author);
         $entityManager->flush();
 
         return new JsonResponse(['status' => 'ok']);
+    }
+    public function countBooks()
+    {
+        $authors = $this->getDoctrine()
+            ->getRepository(CoauthorNew::class)
+            ->findAll();
+
+        $authors_id = $this->getDoctrine()
+            ->getRepository(Author::class)
+            ->findAll();
+
+        foreach ($authors_id as $id){
+            $i = 0;
+            $count = 0;
+            foreach ($authors as $author){
+                if($id->getId() == $author-> getAuthorId()) {
+                    $i ++;
+                }
+                $count = $i;
+            }
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $author = $entityManager->getRepository(Author::class)->find($id->getId());
+            $author->setCountBook($count);
+
+            $entityManager->flush();
+        }
+        return $this->redirect('http://taptima2/author/read');
     }
 
     public function form()
