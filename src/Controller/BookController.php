@@ -165,7 +165,7 @@ class BookController extends AbstractController
     public function NativeSQl()
     {
         $mysqli = new mysqli("localhost", "root", "", "taptima2");
-        $result = $mysqli->query("SELECT b.book_name,COUNT(c.book_id) AS count FROM CoauthorNew c JOIN Book b WHERE b.id = c.book_id AND c.main_author IS NULL GROUP BY c.book_id HAVING COUNT(c.book_id) > 2");
+        $result = $mysqli->query("SELECT b.book_name,COUNT(c.book_id) AS count FROM coauthor_new c JOIN book b WHERE b.id = c.book_id AND c.main_author IS NULL GROUP BY c.book_id HAVING COUNT(c.book_id) > 2");
 
         foreach ((array)$result as $value){
             echo '<pre>'.print_r($value,true).'</pre>';
