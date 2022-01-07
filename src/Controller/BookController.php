@@ -83,8 +83,23 @@ class BookController extends AbstractController
                 'year'        => $value['year'],
             );
         }
+
+        $authors = $this->getDoctrine()
+            ->getRepository(Author::class)
+            ->findAll();
+
+        $author_array = array();
+
+        foreach ($authors as $value){
+            $author_array[] = array(
+                'id'          => $value -> getId(),
+                'author'      => $value -> getAuthorName()
+            );
+        }
+
         return $this->render('book/index.html.twig', array(
             'books' => $book_array,
+            'authors' => $author_array
         ));
     }
 
@@ -92,17 +107,38 @@ class BookController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
         $data = $request->request->all();
-        $book = $entityManager->getRepository(Book::class)->find($data['book_form']['id']);
 
-        $book-> setBookName($data['book_form']['author_name']);
-        $book-> setAuthor($data['book_form']['author_name']);
-        $book-> setTitle($data['book_form']['author_name']);
-        $book-> setImages($data['book_form']['author_name']);
-        $book-> setYear($data['book_form']['author_name']);
+        $book = $entityManager->getRepository(Book::class)->find($data['id']);
+
+        if (isset($_FILES['input_file_name'])) {
+            $fotoname = rand(1000, 9999) . time() . '_' . $_FILES['input_file_name']['name'];
+            $destiation_dir = basename('/public/image/' . $fotoname);
+            move_uploaded_file($_FILES['input_file_name']['tmp_name'], $destiation_dir);
+
+            $book -> setImages($destiation_dir);
+        }
 
         $entityManager->flush();
 
-        return new JsonResponse(['status' => 'ok','authors' => $data['author_form']['author_name']]);
+        $book-> setBookName($data['name']);
+        $book-> setTitle($data['title']);
+        $book-> setYear($data['year']);
+
+        $entityManager->flush();
+
+        $book_id = $data['id'];
+        $author_id = $data['author'];
+
+        $mysqli = new mysqli("localhost", "root", "", "taptima2");
+        $sql = "UPDATE coauthor_new SET author_id='$author_id' WHERE book_id='$book_id'";
+        $result = $mysqli->query($sql);
+
+        $mysqli->close();
+
+        $author_name = $entityManager->getRepository(Author::class)->find($author_id);
+        $data['author'] = $author_name->getAuthorName();
+        return new JsonResponse(['status' => 'ok','data' => $data]);
+
     }
 
     public function delete(Request $request)
@@ -110,7 +146,7 @@ class BookController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $data = $request->request->all();
 
-        $book = $entityManager->getRepository(Book::class)->find($data['book_form']['id']);
+        $book = $entityManager->getRepository(Book::class)->find($data['id']);
 
         $entityManager->remove($book);
         $entityManager->flush();
@@ -131,9 +167,10 @@ class BookController extends AbstractController
         $mysqli = new mysqli("localhost", "root", "", "taptima2");
         $result = $mysqli->query("SELECT b.book_name,COUNT(c.book_id) AS count FROM CoauthorNew c JOIN Book b WHERE b.id = c.book_id AND c.main_author IS NULL GROUP BY c.book_id HAVING COUNT(c.book_id) > 2");
 
-        foreach ($result as $value){
+        foreach ((array)$result as $value){
             echo '<pre>'.print_r($value,true).'</pre>';
         }
+        $mysqli->close();
     }
 
     public function bookGenerator()
@@ -155,7 +192,7 @@ class BookController extends AbstractController
             );
         }
 
-        $book_name = array("Властелин колец","Гордость и предубеждение","Тёмные начала","1984","Ветер в ивах","Большие надежды");
+        $book_name = array("Властелин колец","Гордость и предубеждение","Тёмные начала","Спартак","Ветер в ивах","Большие надежды");
         $book_title = array("Lorem ipsum dolor sit amet, consectetur adipiscing elit ");
         $book_year = array("1849", "1714","1999","2016","2010","2015","1998");
 

@@ -1,75 +1,364 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <title>width: 100%</title>
+    <style>
+        #myInput {
+            background-position: 10px 12px;
+            background-repeat: no-repeat;
+            width: 100%;
+            font-size: 16px;
+            padding: 12px 20px 12px 40px;
+            border: 1px solid #ddd;
+            margin-bottom: 12px;
+        }
 
-{% block body %}
-<table id="example" class="display" style="width:100%">
-    <thead>
-    <tr>
-        <th>id</th>
-        <th>book_name</th>
-        <th>author</th>
-        <th>title</th>
-        <th>images</th>
-        <th>year</th>
-        <th>кнопки</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for post in books %}
-        <tr>
-            <td>{{ post.id }}</td>
-            <td>{{ post.book_name }}</td>
-            <td>{{ post.author }}</td>
-            <td>{{ post.title }}</td>
-            <td><img width="100px" src="/{{ post.images }}"/></td>
-            <td>{{ post.year }}</td>
-            <td>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    Launch demo modal
-                </button>
-            </td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+        #dataTable {
+            border-collapse: collapse; /* Свернуть границы */
+            width: 100%; /* Полная ширина */
+            border: 1px solid #ddd; /* Добавить серую границу */
+            font-size: 18px; /* Увеличить размер шрифта */
+        }
 
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+        #dataTable th, #myTable td {
+            text-align: left; /* Выравнивание текста по левому краю */
+            padding: 12px; /* Добавить отступ */
+        }
+
+        #dataTable tr {
+            /* Добавить нижнюю границу для всех строк таблицы */
+            border-bottom: 1px solid #ddd;
+        }
+
+        #dataTable tr.header, #myTable tr:hover {
+            /* Добавить серый цвет фона для заголовка таблицы и при наведении курсора мыши */
+            background-color: #f1f1f1;
+        }
+        .btn {
+            display: inline-block;
+            box-sizing: border-box;
+            padding: 0 25px;
+            margin: 0 15px 15px 0;
+            outline: none;
+            border: 1px solid #fff;
+            border-radius: 50px;
+            height: 36px;
+            line-height: 36px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            color: #444;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgb(65 132 144 / 10%), 0 1px 3px rgb(0 0 0 / 8%);
+            cursor: pointer;
+            user-select: none;
+            appearance: none;
+            touch-action: manipulation;
+            vertical-align: top;
+            transition: box-shadow 0.2s;
+        }
+        .btn:focus-visible {
+            border: 1px solid #4c51f9;
+            outline: none;
+        }
+        .btn:hover {
+            transition: all 0.2s;
+            box-shadow: 0 7px 14px rgb(65 132 144 / 10%), 0 3px 6px rgb(0 0 0 / 8%);
+        }
+        .btn:active {
+            background-color: #808080;
+        }
+        .btn:disabled {
+            background-color: #eee;
+            border-color: #eee;
+            color: #444;
+            cursor: not-allowed;
+        }
+        .table {
+            width: 100%;
+            border: none;
+            margin-bottom: 20px;
+        }
+        .table thead th {
+            font-weight: bold;
+            text-align: left;
+            border: none;
+            padding: 10px 15px;
+            background: #d8d8d8;
+            font-size: 14px;
+        }
+        .table thead tr th:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+        .table thead tr th:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+        .table tbody td {
+            text-align: left;
+            border: none;
+            padding: 10px 15px;
+            font-size: 14px;
+            vertical-align: top;
+        }
+        .table tbody tr:nth-child(even){
+            background: #f3f3f3;
+        }
+        .table tbody tr td:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+        .table tbody tr td:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+    </style>
+
+</head>
+<body>
+<!--<link  rel = "stylesheet"  href = "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" >-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+
+    function findText(inputText,classN) {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById(inputText);
+        filter = input.value.toUpperCase();
+        table = document.getElementById("dataTable");
+        tr = table.getElementsByTagName("tr");
+        for (i = 1; i < tr.length; i++) {
+            td = tr[i].querySelector(classN);
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+
+    $('body').on('click', '.toolbar-img', function(){
+        var url = prompt('Введите адрес изображения', 'https://sun9-47.userapi.com/c11145/u17421543/-14/m_0762c474.jpg');
+
+        document.execCommand('delete', false, null);
+        document.execCommand('selectAll', false, '.toolbar-img' );
+
+        if(url == null) {
+            document.execCommand('undo', false, null);
+        }else{
+            document.execCommand('insertImage', false, url);
+        }
+
+        return false;
+    });
+
+    $(document).ready(function(){
+        $('.editBtn').on('click',function(){
+            //hide edit span
+            $(this).closest("tr").find(".editSpan:not('.photo')").hide();
+
+            //show edit input
+            $(this).closest("tr").find(".editInput").show();
+
+            //hide edit button
+            $(this).closest("tr").find(".editBtn").hide();
+
+            //show edit button
+            $(this).closest("tr").find(".saveBtn").show();
+
+        });
+
+
+
+        $('.saveBtn').on('click',function(){
+            let trObj = $(this).closest("tr");
+            let ID = $(this).closest("tr").attr('id');
+            let inputData = $(this).closest("tr").find(".editInput");
+            let files = this.files;
+
+            let data = new FormData();
+            data.append('input_file_name', $(this).closest("tr").find('input[type=file]')[0].files[0]);
+            data.append('title', $(this).closest("tr").find('input[name=title]').val());
+            data.append('name', $(this).closest("tr").find('input[name=name]').val());
+            data.append('author', $(this).closest("tr").find('select[name=author]').val());
+            data.append('year', $(this).closest("tr").find('input[name=year]').val());
+            data.append('id', ID);
+
+            $.ajax({
+                type:'POST',
+                url:'/book/update',
+                dataType: "json",
+                data: data,
+                cache: false,
+                //data:'action=edit&id='+ID+'&'+inputData,
+                processData: false,
+                contentType: false,
+                success:function(response){
+                    console.log(response);
+                    if(response.status === 'ok'){
+                        trObj.find(".editSpan.name").text(response.data.name);
+                        trObj.find(".editSpan.author").text(response.data.author);
+                        trObj.find(".editSpan.title").text(response.data.title);
+                        trObj.find(".editSpan.year").text(response.data.year);
+
+                        trObj.find(".editSpan.image").attr('src', response.data.image_path);
+
+                        trObj.find(".editInput.name").text(response.data.name);
+                        //trObj.find(".editInput.author").val(response.data.author).change();
+                        trObj.find(".editInput.author option[value='" + response.data.author + "']").attr('selected', 'selected');
+                        trObj.find(".editInput.title").text(response.data.title);
+                        trObj.find(".editInput.year").text(response.data.year);
+
+
+
+                        trObj.find(".editInput").hide();
+                        trObj.find(".saveBtn").hide();
+                        trObj.find(".editSpan").show();
+                        trObj.find(".editBtn").show();
+                    }else{
+                        alert(response.msg);
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        });
+
+        $('.deleteBtn').on('click',function(){
+            //hide delete button
+            $(this).closest("tr").find(".deleteBtn").hide();
+
+            //show confirm button
+            $(this).closest("tr").find(".confirmBtn").show();
+
+        });
+
+        $('.confirmBtn').on('click',function(){
+            let trObj = $(this).closest("tr");
+            let ID = $(this).closest("tr").attr('id');
+            $.ajax({
+                type:'POST',
+                url:'/book/delete',
+                dataType: "json",
+                data:'action=delete&id='+ID,
+                success:function(response){
+                    if(response.status === 'ok'){
+                        trObj.remove();
+                    }else{
+                        trObj.find(".confirmBtn").hide();
+                        trObj.find(".deleteBtn").show();
+                        alert(response.msg);
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+<div class="container " xmlns:max-width="http://www.w3.org/1999/xhtml">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">Библиотека</div>
+                <div class="card-body">
+                    <div class="toolbar">
+                        <table  class="table table-striped table-bordered" id="dataTable">
+                            <thead>
+                            <tr>
+                                <th width="5%"><input type="text" id="myInput0" onkeyup="findText('myInput0','.name')" placeholder="Поиск по названию"></th>
+                                <th width="10%"><input type="text" id="myInput1" onkeyup="findText('myInput1','.author')" placeholder="Поиск по автору"></th>
+
+                                <th width="10%"><input type="text" id="myInput3" onkeyup="findText('myInput3','.title')" placeholder="Поиск по описаню"></th>
+                                <th width="30%"></th>
+                                <th width="15%" class="year" >
+                                    <input type="text" id="myInput4" onkeyup="findText('myInput4','.year')" placeholder="Поиск по году"></th>
+                                <th width="15%"></th>
+                            </tr>
+                            <tr class="header">
+                                <th width="5%">Название</th>
+                                <th width="10%">Автор</th>
+
+                                <th width="10%">Описание</th>
+                                <th width="30%">Обложка</th>
+                                <th width="15%" class="year" >
+                                    Год публикации</th>
+                                <th width="15%">Действия</th>
+                            </tr>
+
+                            </thead>
+                            <tbody id="userData">
+                            {% for post in books %}
+                                <tr id="{{ post.id}}">
+                                    <td>
+                                        <span class="editSpan name">{{ post.book_name}}</span>
+                                        <input class="editInput name form-control input-sm" type="text" name="name"
+                                               value="{{ post.book_name}}" style="display: none;">
+                                    </td>
+                                    <td>
+                                        <span class="editSpan author">{{ post.author}}</span>
+                                        <select class="editInput author form-control input-sm" type="text" name="author"
+                                                style="display: none;">
+                                            {% for author in authors %}
+                                                <option {{ author.id == post.author ? 'selected' : NULL}} value="{{ author.id}}">{{author.author}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                    <!--                                    ----------------------------------------------------------------------------------->
+                                    <td>
+                                        <span class="editSpan title">{{ post.title}}</span>
+                                        <input class="editInput title form-control input-sm" type="text" name="title"
+                                               value="{{ post.title}}" style="display: none;">
+                                    </td>
+                                    <td><img src="/{{ post.images }}" alt="" width="135" height="135" class="photo editSpan image">
+                                        <input type="file" id="js-file" multiple="multiple" class="editInput image form-control input-sm" name="image"
+                                               value="" style="display: none;">
+                                    </td>
+                                    <td>
+                                        <span class="editSpan year">{{ post.year}}</span>
+                                        <label>
+                                            <input class="editInput year form-control input-sm" type="text" name="year"
+                                                   value="{{ post.year}}" style="display: none;">
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button type="button" class="btn btn-sm btn-default editBtn" style="float: none;"><span class="glyphicon glyphicon-pencil">Редактировать</span></button>
+                                            <button type="button" class="btn btn-sm btn-default deleteBtn" style="float: none;"><span class="glyphicon glyphicon-trash">Удалить</span></button>
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-success saveBtn" style="float: none; display: none;">Сохранить</button>
+                                        <button type="button" class="btn btn-sm btn-danger confirmBtn" style="float: none; display: none;">Применить</button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <a href="/book/form" class="mb-1 btn btn-primary" type="button">
+                        Добавить книгу
+                    </a>
+                    <a href="/author/read" class="mb-1 btn btn-primary" type="button">
+                        К авторам
+                    </a>
+                    <a href="/author/form" class="mb-1 btn btn-primary" type="button">
+                        Добавить автора
+                    </a>
+                    <a href="/coauthor/form" class="mb-1 btn btn-primary" type="button">
+                        Добавить соавтора
+                    </a>
+                    <a href="/book/generate" class="mb-1 btn btn-primary" type="button">
+                        Сгенерировать книгу
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-    </div>
-    <a href="/book/form" class="mb-1 btn btn-primary" type="button">
-        Добавить книгу
-    </a>
-    <a href="/author/read" class="mb-1 btn btn-primary" type="button">
-        К авторам
-    </a>
-    <a href="/author/form" class="mb-1 btn btn-primary" type="button">
-        Добавить автора
-    </a>
-    <a href="/coauthor/form" class="mb-1 btn btn-primary" type="button">
-        Добавить соавтора
-    </a>
-    <a href="/book/generate" class="mb-1 btn btn-primary" type="button">
-        Сгенерировать книгу
-    </a>
-    </div>
+</div>
 
-    <script>
-        $(document).ready(function() {
-            $('#example').DataTable();
-        } );
-    </script>
-{% endblock %}
+</body>
+</html>
+
+
+
